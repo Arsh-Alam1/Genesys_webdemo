@@ -44,14 +44,11 @@
   </div>
 
   <script>
-    // 🔹 Configure your Okta + Genesys values here:
     const oktaDomain = "https://YOUR_OKTA_DOMAIN.okta.com";
     const clientId = "YOUR_OKTA_CLIENT_ID";
     const redirectUri = window.location.origin + window.location.pathname;
     const genesysDeploymentId = "YOUR_GENESYS_DEPLOYMENT_ID";
-    const genesysScriptUrl = "https://apps.mypurecloud.com/messenger/bootstrap.js"; 
-    // (replace with correct region-specific Genesys Messenger bootstrap URL)
-
+    const genesysScriptUrl = "link to bootstrap or snippet"; 
     const authClient = new OktaAuth.OktaAuth({
       issuer: `${oktaDomain}/oauth2/default`,
       clientId: clientId,
@@ -60,17 +57,15 @@
     });
 
     async function init() {
-      // If redirected from Okta with code
       if (authClient.token.isLoginRedirect()) {
         const { tokens } = await authClient.token.parseFromUrl();
         authClient.tokenManager.setTokens(tokens);
-        window.history.replaceState({}, document.title, redirectUri); // clean URL
+        window.history.replaceState({}, document.title, redirectUri); 
       }
-
       const tokens = await authClient.tokenManager.getTokens();
       if (tokens.idToken) {
         document.getElementById("status").innerText = "Authenticated ✔️";
-        showMessenger(tokens.idToken.idToken); // pass raw JWT
+        showMessenger(tokens.idToken.idToken); 
       } else {
         document.getElementById("status").innerText = "Please log in to start chat.";
         document.getElementById("loginBtn").style.display = "inline-block";
@@ -82,12 +77,11 @@
     }
 
     function showMessenger(jwt) {
-      // Inject Genesys Messenger after login
       window._genesys = window._genesys || {};
       window._genesys.widgets = {
         main: {
           deploymentId: genesysDeploymentId,
-          data: { jwt: jwt } // 🔹 Adjust depending on Genesys expected param
+          data: { jwt: jwt } // here i can replace snippet of messenger
         }
       };
 
@@ -100,3 +94,4 @@
   </script>
 </body>
 </html>
+
