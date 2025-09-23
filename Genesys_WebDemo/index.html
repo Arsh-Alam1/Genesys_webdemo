@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Genesys Messenger with Okta Auth</title>
 
-  <script src="https://global.oktacdn.com/okta-auth-js/7.4.1/okta-auth-js.umd.min.js" 
+  <script src="https://global.oktacdn.com/okta-auth-js/7.4.1/okta-auth-js.min.js" type="text/javascript" 
           onload="initOkta()" async></script>
 
   <style>
@@ -90,7 +90,7 @@
       async function initOkta() {
       const oktaDomain = "https://integrator-5726914.okta.com";
       const clientId = "0oavavakwhR270SsR697";
-      const redirectUri = "http://localhost:5500/";
+      const redirectUri = "https://crispy-enigma-v6qpw76997g6fxg6-8080.app.github.dev/";
       const genesysDeploymentId = "1c1d7872-477d-4103-9a68-e949ce968f86";
     
       const authClient = new OktaAuth({
@@ -102,7 +102,10 @@
 
 
       if (authClient.token.isLoginRedirect()) {
-        const { tokens } = await authClient.token.parseFromUrl();
+        const { tokens } = await authClient.token.parseFromUrl(
+          {
+    responseType: ["token", "id_token"]
+          });
         authClient.tokenManager.setTokens(tokens);
         window.history.replaceState({}, document.title, redirectUri);
       }
@@ -114,7 +117,7 @@
       if (tokens.idToken && tokens.accessToken) {
         statusEl.innerText = "Authenticated ✔️ You can now chat.";
         loginBtn.style.display = "none";
-        enableMessenger(tokens.accessToken.acessToken);
+        enableMessenger(tokens.accessToken.accessToken);
       } else {
         statusEl.innerText = "Please log in to start chat.";
         loginBtn.onclick = async () => {
